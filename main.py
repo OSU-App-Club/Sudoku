@@ -255,7 +255,7 @@ class PuzzleSolver(webapp2.RequestHandler):
 # Redirect of /cron
 #	This handles CRON, or background tasks that run on a time schedule, jobs to periodically solve unsolved puzzles
 #	Old puzzles are also deleted in this job in keep db small
-#	Demonstrates the CRON functionality in GAE
+#	Demonstrates the CRON functionality in GAE; also see https://github.com/OSU-App-Club/Sudoku/blob/master/cron.yaml
 class CronHandler(webapp2.RequestHandler):
 	def get(self):
 		sudokus = db.GqlQuery("SELECT * "
