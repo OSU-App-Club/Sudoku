@@ -7,8 +7,11 @@ import webapp2
 from datetime import datetime, timedelta
 from google.appengine.ext import db
 
+#Sample of puzzle format on input
 #038796215659132478271458693845219367713564829926873154194325786362987541587641932
 
+# Database model for single puzzle
+# 	Used to persist puzzles across inputs
 class Sudoku(db.Model):
 	author = db.StringProperty()
 	puzzle = db.StringProperty(multiline=True)
@@ -31,6 +34,9 @@ def square(i):
 	s=(i//27)*27 + (((i%9)//3)*3)
 	return [s, s+1, s+2, s+9, s+10, s+11, s+18, s+19, s+20 ]
 
+
+# Abstract class for solving sudoku puzzles
+# 	All solve proccessing happens in this class
 class Board:
 	possible = {}
 	value	 = {}
@@ -117,7 +123,8 @@ def prettyPrint(puzzle):
     answer = answer+'<br/>'
     return answer
 
-
+# Redirect of / or mainpage
+#	Outputs webpage(HTML) with all puzzles and allows web submission
 class MainPage(webapp2.RequestHandler):
 
 	def get(self):
@@ -150,8 +157,13 @@ class MainPage(webapp2.RequestHandler):
 
 		self.redirect('/')
 
-
+# Redirect of /solve
+# 	Handles input of puzzle and requests to get all stored & solved puzzles
 class SolveHandler(webapp2.RequestHandler):
+	
+	# HTTP GET
+	#  All stored sudoku puzzles; solve if haven't been solve yet
+	#  Return as prettyPrint() solutions in plain text
 	def get(self):
 		sudokus = db.GqlQuery("SELECT * "
 							"FROM Sudoku "
@@ -170,7 +182,11 @@ class SolveHandler(webapp2.RequestHandler):
 				sudoku.put()
 	
 			self.response.out.write('<p>%s<p>'%prettyPrint(sudoku.solved_puzzle))
-
+	
+	# HTTP POST
+	# Params
+	#	puzzle: input puzzle as single line
+	#	author: name attributed to inputed puzzle (Default: Anonymous)
 	def post(self):
 		sudokubook_name = 'cs496'
 		sudoku = Sudoku(parent=sudokubook_key(sudokubook_name))
@@ -209,7 +225,7 @@ class ViewHandler(webapp2.RequestHandler):
 			if k is 18 or k is 45:
 				response =response + '---- + ---- + ----\n'
 		self.response.out.write(response)
-
+		
 class PuzzleSolver(webapp2.RequestHandler):
 	def get(self):
 		puzzle = self.request.get('puzz')
@@ -236,6 +252,10 @@ class PuzzleSolver(webapp2.RequestHandler):
 
 		self.response.out.write('<br/>')
 
+# Redirect of /cron
+#	This handles CRON, or background tasks that run on a time schedule, jobs to periodically solve unsolved puzzles
+#	Old puzzles are also deleted in this job in keep db small
+#	Demonstrates the CRON functionality in GAE
 class CronHandler(webapp2.RequestHandler):
 	def get(self):
 		sudokus = db.GqlQuery("SELECT * "
@@ -253,7 +273,8 @@ class CronHandler(webapp2.RequestHandler):
 		
 			if sudoku.date < datetime.now() - timedelta(minutes=120):
 				sudoku.delete()
-
+# Redirect of /share
+# 	Used to share link to puzzels by given author on g+
 class ShareHandler(webapp2.RequestHandler):
 	def get(self):
 		author = ""
@@ -261,6 +282,8 @@ class ShareHandler(webapp2.RequestHandler):
 		self.response.out.write("https://plus.google.com/share?url=sudoku_496.appspot.com/view?author="+author)
 
 
+# Core of GAE app
+# This redirects urls to certain request handlers: ie requests to someURL/solve with go to SolverHandler()
 app = webapp2.WSGIApplication([
 	('/', MainPage),
 	('/view', ViewHandler),
