@@ -199,7 +199,15 @@ class SolveHandler(webapp2.RequestHandler):
 
 		self.redirect('/view?author=' + sudoku.author)
 
+# Redirect of /view
+#	Used by both app to return plain text of puzzles 
 class ViewHandler(webapp2.RequestHandler):
+	
+	# HTTP GET
+	#	Query params:
+	#		author: used to search for puzzles
+	#	Searches database for all puzzles of given "author"; solves if needbe
+	#	Returns plain text solutions with line formatting
 	def get(self):
 		author = "Anonymous"
 		author = self.request.get('author')
@@ -225,32 +233,6 @@ class ViewHandler(webapp2.RequestHandler):
 			if k is 18 or k is 45:
 				response =response + '---- + ---- + ----\n'
 		self.response.out.write(response)
-		
-class PuzzleSolver(webapp2.RequestHandler):
-	def get(self):
-		puzzle = self.request.get('puzz')
-		sudoku = db.GqlQuery("SELECT * "
-							  "FROM Sudoku "
-							  "AND puzzle= :1", puzzle)
-
-		for s in sudoku:
-			if s.solved_puzzle == None:
-				b = Board()
-				partialSolve(b, sudoku.puzzle)
-				fullAnswer = ''
-				for k in range (0, 81):
-					fullAnswer = fullAnswer + b.value[k]
-				sudoku.solved_puzzle = fullAnswer
-				s.put()	
-			
-		for k in range (0, 81, 9):
-			self.response.out.write(fullAnswer[k+0:k+3] +
-				 ' | ' + fullAnswer[k+3:k+6] +
-				 ' | ' + fullAnswer[k+6:k+9]+'<br/>')
-			if k is 18 or k is 45:
-				self.response.out.write('---- + ---- + ----'+'<br/>')
-
-		self.response.out.write('<br/>')
 
 # Redirect of /cron
 #	This handles CRON, or background tasks that run on a time schedule, jobs to periodically solve unsolved puzzles
