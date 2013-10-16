@@ -114,14 +114,14 @@ def sudokubook_key(sudokubook_name=None):
 	return db.Key.from_path('Guestbook', sudokubook_name or 'default_sudokubook')
 
 def prettyPrint(puzzle):
-    answer = ''
-    for k in range (0, 81, 9):
-        answer = answer + puzzle[k+0:k+3] + ' | ' + puzzle[k+3:k+6] + ' | ' + puzzle[k+6:k+9]+'<br/>'
-        if k is 18 or k is 45:
-            answer =answer + '---- + ---- + ----'+'<br/>'
+	answer = ''
+	for k in range (0, 81, 9):
+		answer = answer + puzzle[k+0:k+3] + ' | ' + puzzle[k+3:k+6] + ' | ' + puzzle[k+6:k+9]+'<br/>'
+		if k is 18 or k is 45:
+			answer =answer + '---- + ---- + ----'+'<br/>'
 
-    answer = answer+'<br/>'
-    return answer
+	answer = answer+'<br/>'
+	return answer
 
 # Redirect of / or mainpage
 #	Outputs webpage(HTML) with all puzzles and allows web submission
@@ -261,7 +261,9 @@ class ShareHandler(webapp2.RequestHandler):
 	def get(self):
 		author = ""
 		author = self.request.get('author')
-		self.response.out.write("https://plus.google.com/share?url=sudoku_496.appspot.com/view?author="+author)
+		self.response.out.write("https://twitter.com/intent/tweet?text="+author+"%20solved%20a%20puzzle%20on%20GAE")
+		#this url doesn't exist, we should probably get a osu gae account to run this on	
+		#self.response.out.write("https://plus.google.com/share?url=osu_appclub.appspot.com/view?author="+author)
 
 
 # Core of GAE app
