@@ -16,11 +16,15 @@ class Sudoku(db.Model):
 	date = db.DateTimeProperty(auto_now_add=True)
 
 def row(i):
+	
+	## the input is one long string so when you floor divide it
+	## and multiply it you get the starting index of the row
 	r=(i//9)*9
 	return [ r, r+1, r+2, r+3, r+4, r+5, r+6, r+7, r+8 ]
 
 def col(i):
 	c=(i%9)
+	## hey! adding by 9 each times gives you the column values
 	return [c, c+9, c+18, c+27, c+36, c+45, c+54, c+63, c+72 ]
 
 def square(i):
