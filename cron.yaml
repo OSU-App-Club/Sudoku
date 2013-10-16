@@ -1,0 +1,5 @@
+#Copyright 2013 by Ryley Herrington
+cron:
+- description: delete old puzzles  
+  url: /cron
+  schedule: every 24 hours

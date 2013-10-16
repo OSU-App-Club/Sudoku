@@ -1,4 +1,5 @@
-Sudoku
-======
+Sudoku for App Club	
+==========
 
-GAE instance with (hopefully) android and iOS apps to make it work.
+Android and iOS apps to come by other people. 
+
