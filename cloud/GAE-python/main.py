@@ -98,7 +98,7 @@ def setCell(b, position, newVal):
 				if (x != position):
 					markCell(b, x, newVal)
 
-
+def partialSolve(b, line):
 	for i in range(81):
 		b.possible[i] = "123456789"
 		b.value[i] = '0'
@@ -108,7 +108,6 @@ def setCell(b, position, newVal):
 			setCell(b, position, val)
 		position = position + 1
 	setUniqueInBoard(b)
-
 
 def sudokubook_key(sudokubook_name=None):
 	return db.Key.from_path('Guestbook', sudokubook_name or 'default_sudokubook')
