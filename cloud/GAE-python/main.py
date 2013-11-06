@@ -132,7 +132,7 @@ class MainPage(webapp2.RequestHandler):
 
 		sudokus = db.GqlQuery("SELECT * "
 							"FROM Sudoku "
-							"ORDER BY date DESC LIMIT 10")
+							"ORDER BY date DESC LIMIT 2")
 
 		for sudoku in sudokus:
 			if sudoku.author == None:
